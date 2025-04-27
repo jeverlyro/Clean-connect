@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -12,9 +13,13 @@ export default {
 	theme: {
 		container: {
 			center: true,
-			padding: '2rem',
+			padding: '1rem',
 			screens: {
-				'2xl': '1400px'
+				'sm': '550px',
+				'md': '550px',
+				'lg': '550px',
+				'xl': '550px',
+				'2xl': '550px'
 			}
 		},
 		extend: {
@@ -61,6 +66,22 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom water-themed colors
+				water: {
+					light: '#E3F2FD',
+					DEFAULT: '#2196F3',
+					dark: '#1565C0',
+				},
+				aqua: {
+					light: '#E0F7FA',
+					DEFAULT: '#00BCD4',
+					dark: '#00838F',
+				},
+				teal: {
+					light: '#E0F2F1',
+					DEFAULT: '#009688',
+					dark: '#00695C',
 				}
 			},
 			borderRadius: {
@@ -84,11 +105,28 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'ripple': {
+					'0%': {
+						transform: 'scale(0)',
+						opacity: '1',
+					},
+					'100%': {
+						transform: 'scale(4)',
+						opacity: '0',
+					},
+				},
+				'wave': {
+					'0%': { transform: 'translateX(0)' },
+					'50%': { transform: 'translateX(-25%)' },
+					'100%': { transform: 'translateX(0)' },
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'ripple': 'ripple 1s linear infinite',
+				'wave': 'wave 3s ease-in-out infinite',
 			}
 		}
 	},
