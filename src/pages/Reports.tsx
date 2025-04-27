@@ -1,10 +1,9 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Chart, Table } from 'lucide-react';
+import { Table, BarChart } from 'lucide-react';
 
 const Reports = () => {
   // Mock data for reports
@@ -83,7 +82,7 @@ const Reports = () => {
               <span>Recent Reports</span>
             </TabsTrigger>
             <TabsTrigger value="trends" className="flex items-center gap-2">
-              <Chart className="h-4 w-4" />
+              <BarChart className="h-4 w-4" />
               <span>Trends</span>
             </TabsTrigger>
           </TabsList>
@@ -136,7 +135,7 @@ const Reports = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-12 space-y-4">
-                  <Chart className="h-12 w-12 mx-auto text-muted-foreground/50" />
+                  <BarChart className="h-12 w-12 mx-auto text-muted-foreground/50" />
                   <p className="text-muted-foreground">
                     Trend analysis will be available after more data is collected.
                   </p>

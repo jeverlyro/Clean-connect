@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Droplet, MessageCircle, Camera, Chart } from 'lucide-react';
+import { Droplet, MessageCircle, Camera, BarChart } from 'lucide-react';
 
 const Index = () => {
   const features = [
@@ -23,7 +23,7 @@ const Index = () => {
       linkText: 'Analyze Water',
     },
     {
-      icon: <Chart className="h-10 w-10 text-primary" />,
+      icon: <BarChart className="h-10 w-10 text-primary" />,
       title: 'Reports',
       description: 'View historical data and reports on water quality in your area.',
       link: '/reports',
