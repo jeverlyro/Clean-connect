@@ -1,14 +1,13 @@
+import { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Camera, Image } from "lucide-react";
 
-import { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Camera, Image } from 'lucide-react';
-
-interface CameraCaptureProps {
-  onCapture: (imageData: string) => void;
+export interface CameraCaptureProps {
+  onImageCapture: (imageData: string) => void;
 }
 
-const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
+const CameraCapture = ({ onImageCapture }: CameraCaptureProps) => {
   const [isCapturing, setIsCapturing] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -16,55 +15,92 @@ const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
 
   const startCamera = async () => {
     try {
+      // Check if mediaDevices is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error("Media Devices API not supported in your browser");
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: 'environment',
+          facingMode: "environment",
           width: { ideal: 1280 },
-          height: { ideal: 720 }
-        }
+          height: { ideal: 720 },
+        },
       });
       streamRef.current = stream;
-      
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        // Ensure video starts playing
+        videoRef.current
+          .play()
+          .catch((e) => console.error("Error playing video:", e));
       }
-      
+
       setIsCapturing(true);
     } catch (error) {
-      console.error('Error accessing camera:', error);
-      alert('Could not access the camera. Please ensure camera permissions are enabled.');
+      console.error("Error accessing camera:", error);
+
+      // More specific error messages
+      if ((error as Error).name === "NotAllowedError") {
+        alert(
+          "Camera access was denied. Please enable camera permissions in your browser settings."
+        );
+      } else if ((error as Error).name === "NotFoundError") {
+        alert("No camera detected on your device.");
+      } else {
+        alert("Could not access the camera: " + (error as Error).message);
+      }
     }
   };
 
   const stopCamera = () => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
-    
+
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
-    
+
     setIsCapturing(false);
   };
 
   const captureImage = () => {
     if (!videoRef.current) return;
-    
-    const canvas = document.createElement('canvas');
-    canvas.width = videoRef.current.videoWidth;
-    canvas.height = videoRef.current.videoHeight;
-    
-    const ctx = canvas.getContext('2d');
+
+    // Try to capture at a reasonable resolution
+    const canvas = document.createElement("canvas");
+    // Don't make the image too large - this could cause API issues
+    const MAX_DIMENSION = 800;
+    let width = videoRef.current.videoWidth;
+    let height = videoRef.current.videoHeight;
+
+    // Resize if necessary while maintaining aspect ratio
+    if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+      if (width > height) {
+        height = (height / width) * MAX_DIMENSION;
+        width = MAX_DIMENSION;
+      } else {
+        width = (width / height) * MAX_DIMENSION;
+        height = MAX_DIMENSION;
+      }
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    
+
     ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-    
-    const imageDataUrl = canvas.toDataURL('image/jpeg');
+
+    // Use a reasonable quality for JPEG (0.85 is a good balance)
+    const imageDataUrl = canvas.toDataURL("image/jpeg", 0.85);
     setCapturedImage(imageDataUrl);
-    onCapture(imageDataUrl);
-    
+    onImageCapture(imageDataUrl);
+
     stopCamera();
   };
 
@@ -73,16 +109,29 @@ const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
     startCamera();
   };
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (!file) return;
-    
+
+    // Check file size
+    if (file.size > 4 * 1024 * 1024) {
+      // 4MB limit
+      alert("Image is too large. Please choose an image under 4MB.");
+      return;
+    }
+
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const imageDataUrl = e.target?.result as string;
+    reader.onload = (event) => {
+      const imageDataUrl = event.target?.result as string;
       setCapturedImage(imageDataUrl);
-      onCapture(imageDataUrl);
+      onImageCapture(imageDataUrl);
+
+      // Log info about the uploaded image
+      console.log("Uploaded image type:", file.type);
+      console.log("Uploaded image size:", file.size, "bytes");
+      console.log("Image data URL prefix:", imageDataUrl.substring(0, 30));
     };
+
     reader.readAsDataURL(file);
   };
 
@@ -110,7 +159,7 @@ const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
           </label>
         )}
       </div>
-      
+
       <div className="aspect-video relative bg-black">
         {isCapturing ? (
           <video
@@ -132,7 +181,7 @@ const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
           </div>
         )}
       </div>
-      
+
       <div className="p-3 flex justify-between">
         {isCapturing ? (
           <>
@@ -148,9 +197,9 @@ const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
             <Button variant="outline" size="sm" onClick={retakePhoto}>
               Retake
             </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="opacity-0 pointer-events-none"
             >
               Placeholder
@@ -158,9 +207,9 @@ const CameraCapture = ({ onCapture }: CameraCaptureProps) => {
           </>
         ) : (
           <>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="opacity-0 pointer-events-none"
             >
               Placeholder
