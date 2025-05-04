@@ -3,74 +3,164 @@
   flex-direction: column;
   min-height: 100vh;
   padding: 2rem;
-  max-width: 1000px;
+  max-width: 600px; /* Changed from 1000px to 600px */
   margin: 0 auto;
   font-family: var(--font-geist-sans);
+  position: relative;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3.5rem;
+  position: relative;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-400), var(--primary-600));
+  border-radius: 2px;
 }
 
 .header h1 {
   font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(45deg, #0070f3, #00bcd4);
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  background: linear-gradient(90deg, var(--primary-500), var(--accent-500));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-shadow: 0 2px 10px rgba(14, 165, 233, 0.15);
 }
 
 .header p {
-  font-size: 1.2rem;
-  color: #666;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .reportForm {
-  background-color: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  padding: 2.25rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--card-border);
+  animation: fadeIn 0.5s ease;
+  transition: box-shadow var(--transition-normal);
+}
+
+.reportForm:focus-within {
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary-200);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .formGroup {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  animation: slideUp 0.5s ease both;
+}
+
+.formGroup:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.formGroup:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.formGroup:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.formGroup:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .formGroup label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1.0625rem;
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.formGroup label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 16px;
+  background: linear-gradient(
+    to bottom,
+    var(--primary-400),
+    var(--primary-600)
+  );
+  border-radius: 2px;
 }
 
 .input,
 .select,
 .textarea {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius-md);
   font-size: 1rem;
-  transition: border-color 0.2s ease;
+  transition: all var(--transition-normal);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .input:focus,
 .select:focus,
 .textarea:focus {
   outline: none;
-  border-color: #0070f3;
+  border-color: var(--primary-400);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .textarea {
   resize: vertical;
-  min-height: 120px;
+  min-height: 140px;
+  line-height: 1.6;
 }
 
 .imageUpload {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .fileInput {
@@ -78,73 +168,131 @@
 }
 
 .fileLabel {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
-  transition: all 0.2s ease;
+  transition: all var(--transition-normal);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .fileLabel:hover {
-  background-color: #e9e9e9;
+  background-color: var(--neutral-100);
+  border-color: var(--primary-200);
+  color: var(--primary-600);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .previewContainer {
-  margin-top: 1rem;
+  margin-top: 1.25rem;
+  text-align: center;
 }
 
 .imagePreview {
   max-width: 100%;
-  max-height: 200px;
-  border-radius: 8px;
+  max-height: 260px;
+  border-radius: var(--border-radius-md);
   object-fit: contain;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal);
+  border: 2px solid var(--primary-200);
+}
+
+.imagePreview:hover {
+  transform: scale(1.02);
 }
 
 .error {
-  color: #e53935;
-  margin-top: 0.5rem;
+  color: #ef4444;
+  margin-top: 0.75rem;
   margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: var(--border-radius-md);
+  border-left: 4px solid #ef4444;
+  font-size: 0.9375rem;
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
 }
 
 .buttonGroup {
-  margin-top: 2rem;
+  margin-top: 2.5rem;
 }
 
 .submitButton {
   width: 100%;
-  padding: 0.875rem;
-  background-color: #0070f3;
+  padding: 1rem;
+  background: linear-gradient(to right, var(--primary-500), var(--primary-600));
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: var(--border-radius-md);
+  font-size: 1.0625rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
 }
 
 .submitButton:hover:not(:disabled) {
-  background-color: #0052cc;
+  background: linear-gradient(to right, var(--primary-400), var(--primary-500));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.submitButton:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .submitButton:disabled {
-  background-color: #ccc;
+  background: var(--neutral-300);
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* Success page styles */
 .successContainer {
-  background-color: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.5rem;
+  border: 1px solid var(--card-border);
+  animation: fadeIn 0.5s ease;
 }
 
 .successHeader {
@@ -155,132 +303,220 @@
 }
 
 .successIcon {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #e8f5e9;
-  color: #4caf50;
+  background: linear-gradient(135deg, var(--accent-400), var(--accent-500));
+  color: white;
   border-radius: 50%;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
+  animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 .successHeader h2 {
-  margin-bottom: 0.5rem;
-  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .successHeader p {
-  color: #666;
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+  max-width: 600px;
+  line-height: 1.6;
 }
 
 .recommendationsContainer {
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  padding: 1.5rem;
+  background-color: var(--bg-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 1.75rem;
+  border: 1px solid var(--card-border);
+  transition: box-shadow var(--transition-normal);
+}
+
+.recommendationsContainer:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .recommendationsContainer h3 {
-  margin-bottom: 1rem;
-  font-size: 1.4rem;
+  margin-bottom: 1.25rem;
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.recommendationsContainer h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(
+    to bottom,
+    var(--primary-400),
+    var(--primary-600)
+  );
+  border-radius: 2px;
 }
 
 .recommendationsContent {
   white-space: pre-line;
-  line-height: 1.6;
+  line-height: 1.7;
+  color: var(--text-secondary);
 }
 
 .recommendationsContent p {
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .notificationInfo {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  background-color: #e3f2fd;
-  padding: 1rem;
-  border-radius: 8px;
-  color: #0070f3;
+  gap: 1.25rem;
+  background-color: rgba(14, 165, 233, 0.1);
+  padding: 1.25rem;
+  border-radius: var(--border-radius-md);
+  color: var(--primary-600);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+}
+
+.notificationInfo:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .notificationIcon {
   flex-shrink: 0;
+  font-size: 1.75rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .newReportButton {
-  padding: 0.875rem;
-  background-color: #4caf50;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--accent-500), var(--accent-600));
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: var(--border-radius-md);
+  font-size: 1.0625rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
 }
 
 .newReportButton:hover {
-  background-color: #388e3c;
+  background: linear-gradient(135deg, var(--accent-400), var(--accent-500));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.newReportButton:active {
+  transform: translateY(0);
 }
 
 @media (max-width: 768px) {
   .container {
-    padding: 1rem;
+    padding: 1.5rem;
   }
 
   .header h1 {
     font-size: 2rem;
   }
 
+  .header p {
+    font-size: 1.125rem;
+  }
+
+  .reportForm,
+  .successContainer {
+    padding: 1.75rem;
+  }
+
+  .formGroup {
+    margin-bottom: 1.5rem;
+  }
+
+  .formGroup label {
+    font-size: 1rem;
+  }
+
+  .submitButton {
+    padding: 0.875rem;
+  }
+
+  .successIcon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .successHeader h2 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 1.75rem;
+  }
+
   .reportForm,
   .successContainer {
     padding: 1.5rem;
   }
-}
-
-@media (prefers-color-scheme: dark) {
-  .reportForm,
-  .successContainer {
-    background-color: #1a1a1a;
-    color: #f0f0f0;
-  }
-
-  .input,
-  .select,
-  .textarea {
-    background-color: #222;
-    border-color: #444;
-    color: #f0f0f0;
-  }
-
-  .fileLabel {
-    background-color: #333;
-    border-color: #444;
-    color: #ccc;
-  }
-
-  .fileLabel:hover {
-    background-color: #444;
-  }
 
   .recommendationsContainer {
-    background-color: #222;
+    padding: 1.25rem;
+  }
+
+  .recommendationsContainer h3 {
+    font-size: 1.25rem;
   }
 
   .notificationInfo {
-    background-color: #0c2d48;
-    color: #90caf9;
-  }
-
-  .successIcon {
-    background-color: #1b3a1b;
-    color: #81c784;
-  }
-
-  .header p,
-  .successHeader p {
-    color: #aaa;
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
   }
 }
