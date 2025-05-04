@@ -1,0 +1,27 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background waves -->
+  <path d="M0 150C66.6667 150 66.6667 100 133.333 100C200 100 200 150 266.667 150C333.333 150 333.333 100 400 100V300H0V150Z" fill="#E6F7FF"/>
+  <path d="M0 180C66.6667 180 66.6667 140 133.333 140C200 140 200 180 266.667 180C333.333 180 333.333 140 400 140V300H0V180Z" fill="#CCF0FF"/>
+  <path d="M0 210C66.6667 210 66.6667 180 133.333 180C200 180 200 210 266.667 210C333.333 210 333.333 180 400 180V300H0V210Z" fill="#99E1FF"/>
+  <path d="M0 240C66.6667 240 66.6667 220 133.333 220C200 220 200 240 266.667 240C333.333 240 333.333 220 400 220V300H0V240Z" fill="#66CFFF"/>
+  
+  <!-- Water drop in center -->
+  <path d="M200 40C200 40 160 100 160 140C160 162.091 178.909 180 200 180C221.091 180 240 162.091 240 140C240 100 200 40 200 40Z" fill="#0099FF"/>
+  <path d="M200 50C200 50 170 100 170 140C170 156.569 183.431 170 200 170C216.569 170 230 156.569 230 140C230 100 200 50 200 50Z" fill="#33ADFF"/>
+  
+  <!-- Sparkles -->
+  <circle cx="180" cy="90" r="5" fill="white" fill-opacity="0.8"/>
+  <circle cx="210" cy="110" r="3" fill="white" fill-opacity="0.6"/>
+  <circle cx="190" cy="70" r="2" fill="white" fill-opacity="0.7"/>
+  
+  <!-- Small fish -->
+  <path d="M300 250C300 250 320 240 340 250C320 260 300 250 300 250Z" fill="#FF9966"/>
+  <circle cx="335" cy="250" r="2" fill="black"/>
+  
+  <!-- Bubbles -->
+  <circle cx="150" cy="230" r="8" fill="white" fill-opacity="0.4"/>
+  <circle cx="170" cy="260" r="5" fill="white" fill-opacity="0.3"/>
+  <circle cx="130" cy="250" r="6" fill="white" fill-opacity="0.2"/>
+  <circle cx="250" cy="270" r="7" fill="white" fill-opacity="0.3"/>
+  <circle cx="280" cy="240" r="4" fill="white" fill-opacity="0.4"/>
+</svg>

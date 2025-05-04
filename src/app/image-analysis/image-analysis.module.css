@@ -1,0 +1,351 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: var(--font-geist-sans);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(45deg, #0070f3, #00bcd4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .content {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .uploadSection {
+    flex: 1;
+  }
+
+  .resultsSection {
+    flex: 1;
+  }
+}
+
+.uploadSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dropzone {
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #f9f9f9;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropzone:hover {
+  border-color: #0070f3;
+  background-color: #f0f7ff;
+}
+
+.dropzone.hasImage {
+  border-style: solid;
+  padding: 1rem;
+}
+
+.uploadIcon {
+  color: #0070f3;
+  margin-bottom: 1rem;
+}
+
+.fileTypes {
+  font-size: 0.875rem;
+  color: #888;
+  margin-top: 0.5rem;
+}
+
+.fileInput {
+  display: none;
+}
+
+.preview {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.error {
+  color: #e53935;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 1rem;
+}
+
+.analyzeButton {
+  background-color: #0070f3;
+  color: white;
+  flex: 2;
+}
+
+.analyzeButton:hover:not(:disabled) {
+  background-color: #0052cc;
+}
+
+.analyzeButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.resetButton {
+  background-color: #f5f5f5;
+  color: #666;
+  flex: 1;
+  border: 1px solid #ddd;
+}
+
+.resetButton:hover {
+  background-color: #e9e9e9;
+}
+
+.resultsSection {
+  background-color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.resultsSection h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.scoreContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.scoreCircle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.scoreCircle::before {
+  content: "";
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.scoreValue {
+  position: relative;
+  z-index: 1;
+  font-size: 2.5rem;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.scoreValue small {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.scoreLabel {
+  margin-top: 0.75rem;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.contaminantsTable {
+  margin-bottom: 2rem;
+}
+
+.contaminantsTable h3 {
+  margin-bottom: 1rem;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  background-color: #f5f5f5;
+  padding: 0.75rem 1rem;
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.status {
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  text-align: center;
+  width: fit-content;
+}
+
+.safe {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.unsafe {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.analysisText,
+.recommendations {
+  margin-bottom: 2rem;
+}
+
+.analysisText h3,
+.recommendations h3 {
+  margin-bottom: 1rem;
+}
+
+.recommendations ul {
+  padding-left: 1.5rem;
+}
+
+.recommendations li {
+  margin-bottom: 0.5rem;
+}
+
+.saveButton {
+  background-color: #4caf50;
+  color: white;
+  width: 100%;
+}
+
+.saveButton:hover {
+  background-color: #388e3c;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .tableHeader,
+  .tableRow {
+    grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr;
+    font-size: 0.9rem;
+    gap: 0.25rem;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .dropzone {
+    background-color: #151515;
+    border-color: #333;
+  }
+
+  .dropzone:hover {
+    background-color: #0c2d48;
+    border-color: #0070f3;
+  }
+
+  .resultsSection {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+  }
+
+  .scoreCircle::before {
+    background-color: #1a1a1a;
+  }
+
+  .tableHeader {
+    background-color: #222;
+  }
+
+  .tableRow {
+    border-bottom-color: #333;
+  }
+
+  .safe {
+    background-color: #1b3a1b;
+    color: #81c784;
+  }
+
+  .unsafe {
+    background-color: #3e1b1b;
+    color: #ef9a9a;
+  }
+
+  .resetButton {
+    background-color: #333;
+    color: #ccc;
+    border-color: #444;
+  }
+
+  .header p {
+    color: #aaa;
+  }
+}

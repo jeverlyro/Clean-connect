@@ -1,0 +1,463 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: var(--font-geist-sans);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(45deg, #0070f3, #00bcd4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.tabButton {
+  padding: 1rem 2rem;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.tabButton:hover {
+  color: #0070f3;
+}
+
+.activeTab {
+  color: #0070f3;
+}
+
+.activeTab::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #0070f3;
+  border-radius: 3px 3px 0 0;
+}
+
+.loadingContainer,
+.errorContainer,
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+}
+
+.loader {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #0070f3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.errorMessage {
+  color: #e53935;
+  margin-bottom: 1rem;
+}
+
+.retryButton,
+.startButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.retryButton:hover,
+.startButton:hover {
+  background-color: #0052cc;
+}
+
+.contentContainer {
+  flex: 1;
+}
+
+.chatHistoryContainer,
+.analysisHistoryContainer {
+  margin-bottom: 2rem;
+}
+
+.chatHistoryContainer h2,
+.analysisHistoryContainer h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.historyItem {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.historyItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.historyItemHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.dateInfo {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.messageCount {
+  font-size: 0.9rem;
+  color: #0070f3;
+  font-weight: 500;
+}
+
+.chatPreview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.messagePreview {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  position: relative;
+}
+
+.userMessage {
+  background-color: #f0f7ff;
+  align-self: flex-end;
+  max-width: 80%;
+}
+
+.assistantMessage {
+  background-color: #f5f5f5;
+  align-self: flex-start;
+  max-width: 80%;
+}
+
+.messageRole {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.messagePreview p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #333;
+}
+
+.moreMessages {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
+.historyActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.viewButton {
+  padding: 0.6rem 1.2rem;
+  background-color: white;
+  color: #0070f3;
+  border: 1px solid #0070f3;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.viewButton:hover {
+  background-color: #0070f3;
+  color: white;
+}
+
+.analysisGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.analysisCard {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.analysisCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.analysisHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.scoreCircle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.scoreCircle::before {
+  content: "";
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.scoreValue {
+  position: relative;
+  z-index: 1;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.analysisSummary {
+  margin-bottom: 1.5rem;
+}
+
+.analysisSummary h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.analysisSummary p {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.contaminantsPreview {
+  margin-bottom: 1.5rem;
+}
+
+.contaminantsPreview h4 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.contaminantsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contaminantItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contaminantName {
+  font-weight: 500;
+}
+
+.contaminantStatus {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 99px;
+  font-weight: 600;
+}
+
+.safe {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.unsafe {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.analysisActions {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.actionsContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.primaryButton {
+  padding: 0.875rem 2rem;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.primaryButton:hover {
+  background-color: #0052cc;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .tabs {
+    width: 100%;
+  }
+
+  .tabButton {
+    flex: 1;
+    padding: 0.75rem 0.5rem;
+    font-size: 1rem;
+  }
+
+  .analysisGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .header p {
+    color: #aaa;
+  }
+
+  .tabs {
+    border-bottom-color: #333;
+  }
+
+  .tabButton {
+    color: #aaa;
+  }
+
+  .historyItem,
+  .analysisCard {
+    background-color: #1a1a1a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .dateInfo,
+  .moreMessages {
+    color: #aaa;
+  }
+
+  .userMessage {
+    background-color: #0c2d48;
+  }
+
+  .assistantMessage {
+    background-color: #222;
+  }
+
+  .messagePreview p {
+    color: #ddd;
+  }
+
+  .viewButton {
+    background-color: #1a1a1a;
+    border-color: #0070f3;
+  }
+
+  .scoreCircle::before {
+    background-color: #1a1a1a;
+  }
+
+  .analysisSummary p {
+    color: #bbb;
+  }
+
+  .safe {
+    background-color: #1b3a1b;
+    color: #81c784;
+  }
+
+  .unsafe {
+    background-color: #3e1b1b;
+    color: #ef9a9a;
+  }
+}
