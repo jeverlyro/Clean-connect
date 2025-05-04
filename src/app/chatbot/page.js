@@ -178,17 +178,23 @@ export default function ChatbotPage() {
             disabled={isLoading || !input.trim()}
             className={styles.sendButton}
           >
-            <FaPaperPlane />
+            <span className="button-content">
+              <FaPaperPlane />
+            </span>
           </button>
         </form>
       </div>
 
       <div className={styles.actions}>
         <button onClick={clearChat} className={styles.clearButton}>
-          <FaTrash /> Clear Chat
+          <span className="button-content">
+            <FaTrash /> Clear Chat
+          </span>
         </button>
         <a href="/history" className={styles.historyLink}>
-          <FaHistory /> View Chat History
+          <span className="button-content">
+            <FaHistory /> View Chat History
+          </span>
         </a>
       </div>
     </div>

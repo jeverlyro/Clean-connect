@@ -281,7 +281,9 @@ export default function ReportPage() {
               className={styles.submitButton}
               disabled={submitting}
             >
-              {submitting ? "Submitting..." : "Submit Report"}
+              <span className="button-content">
+                {submitting ? "Submitting..." : "Submit Report"}
+              </span>
             </button>
           </div>
         </form>
@@ -345,7 +347,7 @@ export default function ReportPage() {
                   strokeLinejoin="round"
                 />
                 <path
-                  d="M13.73 21C13.5542 21.3031 13.3019 21.5547 12.9982 21.7295C12.6946 21.9044 12.3504 21.9965 12 21.9965C11.6496 21.9965 11.3054 21.9044 11.0018 21.7295C10.6982 21.5547 10.4458 21.3031 10.27 21"
+                  d="M13.73 21C13.5542 21.3031 13.3019 21.5547 12.9982 21.7295C12.6946 21.9044 12.3504 21.9965C12 21.9965C11.6496 21.9965 11.3054 21.9044 11.0018 21.7295C10.6982 21.5547 10.4458 21.3031 10.27 21"
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
@@ -360,7 +362,7 @@ export default function ReportPage() {
           </div>
 
           <button onClick={resetForm} className={styles.newReportButton}>
-            Submit Another Report
+            <span className="button-content">Submit Another Report</span>
           </button>
         </div>
       )}

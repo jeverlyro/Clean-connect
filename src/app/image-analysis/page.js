@@ -179,14 +179,18 @@ export default function ImageAnalysisPage() {
               disabled={!selectedImage || isAnalyzing}
               className={`${styles.button} ${styles.analyzeButton}`}
             >
-              <FaMicroscope />{" "}
-              {isAnalyzing ? "Analyzing..." : "Analyze Water Sample"}
+              <span className="button-content">
+                <FaMicroscope />{" "}
+                {isAnalyzing ? "Analyzing..." : "Analyze Water Sample"}
+              </span>
             </button>
             <button
               onClick={resetAnalysis}
               className={`${styles.button} ${styles.resetButton}`}
             >
-              <FaSync /> Reset
+              <span className="button-content">
+                <FaSync /> Reset
+              </span>
             </button>
           </div>
         </div>
@@ -268,7 +272,9 @@ export default function ImageAnalysisPage() {
               className={`${styles.button} ${styles.saveButton}`}
               onClick={saveAnalysis}
             >
-              <FaSave /> Save Analysis
+              <span className="button-content">
+                <FaSave /> Save Analysis
+              </span>
             </button>
           </div>
         )}

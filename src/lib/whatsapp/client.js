@@ -1,11 +1,23 @@
 import { Client } from "whatsapp-web.js";
-import qrcode from "qrcode-terminal";
+import qrcode from "qrcode";
+import fs from "fs";
+import path from "path";
+import { LocalAuth } from "whatsapp-web.js";
+
+// Fix for fluent-ffmpeg issues
+import ffmpeg from "fluent-ffmpeg";
+import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
+
+// Set ffmpeg path
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 class WhatsAppClient {
   constructor() {
     this.client = null;
     this.isReady = false;
     this.adminPhone = process.env.ADMIN_PHONE_NUMBER || "";
+    this.qrCodePath = path.join(process.cwd(), "public", "whatsapp-qr.png");
+    this.lastQrGenerated = null;
 
     // Log warning if admin phone number is not set
     if (!this.adminPhone) {
@@ -27,20 +39,61 @@ class WhatsAppClient {
     }
 
     try {
+      // Create a data directory for WhatsApp session persistence
+      const sessionDir = path.join(process.cwd(), ".wwebjs_auth");
+      if (!fs.existsSync(sessionDir)) {
+        fs.mkdirSync(sessionDir, { recursive: true });
+      }
+
       this.client = new Client({
         puppeteer: {
-          args: ["--no-sandbox", "--disable-setuid-sandbox"],
+          args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-gpu",
+            "--disable-dev-shm-usage",
+            "--disable-accelerated-2d-canvas",
+          ],
+          headless: true,
         },
+        authStrategy: new LocalAuth({
+          dataPath: sessionDir,
+        }),
       });
 
-      this.client.on("qr", (qr) => {
-        console.log("QR RECEIVED, scan with WhatsApp mobile app:");
-        qrcode.generate(qr, { small: true });
+      this.client.on("qr", async (qr) => {
+        console.log("QR RECEIVED, saving to public folder");
+
+        // Generate QR code as an image file in public directory
+        try {
+          await qrcode.toFile(this.qrCodePath, qr, {
+            scale: 8,
+            margin: 4,
+            color: {
+              dark: "#000000",
+              light: "#ffffff",
+            },
+          });
+
+          this.lastQrGenerated = new Date();
+          console.log(`QR code saved to: ${this.qrCodePath}`);
+          console.log(`Access your QR code at: /whatsapp-qr.png`);
+        } catch (err) {
+          console.error("Failed to generate QR code image:", err);
+        }
+
+        // Also output to console for convenience
+        console.log("QR Code (scan with WhatsApp mobile app):", qr);
       });
 
       this.client.on("ready", () => {
         console.log("WhatsApp client is ready!");
         this.isReady = true;
+
+        // Remove QR code file once authenticated
+        if (fs.existsSync(this.qrCodePath)) {
+          fs.unlinkSync(this.qrCodePath);
+        }
       });
 
       this.client.on("disconnected", () => {

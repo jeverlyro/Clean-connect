@@ -52,32 +52,64 @@ export async function POST(request) {
     await connectDB();
     const report = await Report.create(reportData);
 
-    // Send WhatsApp notification to admin
+    // Send WhatsApp notification to admin (if configured and enabled)
     try {
-      const whatsappClient = getWhatsAppClient();
+      if (process.env.ENABLE_WHATSAPP_NOTIFICATIONS === "true") {
+        const whatsappClient = getWhatsAppClient();
 
-      // Ensure admin phone number is set
-      if (!process.env.ADMIN_PHONE_NUMBER) {
-        console.warn(
-          "Warning: ADMIN_PHONE_NUMBER environment variable not set. WhatsApp notifications won't work properly."
-        );
-      }
+        // Ensure admin phone number is set
+        if (!process.env.ADMIN_PHONE_NUMBER) {
+          console.warn(
+            "Warning: ADMIN_PHONE_NUMBER environment variable not set. WhatsApp notifications won't work properly."
+          );
+        } else {
+          // Check if WhatsApp client is already initialized and ready
+          if (!whatsappClient.isReady) {
+            console.log(
+              "WhatsApp client is not ready. Attempting to use existing session..."
+            );
+            try {
+              // Initialize without waiting for complete initialization
+              // This will use the existing session if available
+              whatsappClient.initialize().catch((err) => {
+                console.error("Background WhatsApp initialization error:", err);
+              });
 
-      await whatsappClient.initialize(); // Ensure the client is initialized
-      const notificationResult = await whatsappClient.sendReportToAdmin(report);
+              console.log("WhatsApp initialization started in the background");
+            } catch (initError) {
+              console.error("Failed to start WhatsApp client:", initError);
+            }
 
-      if (notificationResult.success) {
-        console.log("WhatsApp notification sent successfully");
-        // Update the report to mark it as notified
-        await Report.findByIdAndUpdate(report._id, { isNotified: true });
+            console.log(
+              "Skipping WhatsApp notification for this report as client isn't ready"
+            );
+            console.log(
+              "Please use the WhatsApp Admin page to authenticate first"
+            );
+          } else {
+            // Client is ready, send the notification
+            console.log("WhatsApp client is ready, sending notification...");
+            const notificationResult = await whatsappClient.sendReportToAdmin(
+              report
+            );
+
+            if (notificationResult.success) {
+              console.log("WhatsApp notification sent successfully");
+              // Update the report to mark it as notified
+              await Report.findByIdAndUpdate(report._id, { isNotified: true });
+            } else {
+              console.error(
+                "Failed to send WhatsApp notification:",
+                notificationResult.error
+              );
+            }
+          }
+        }
       } else {
-        console.error(
-          "Failed to send WhatsApp notification:",
-          notificationResult.error
-        );
+        console.log("WhatsApp notifications are disabled in configuration");
       }
     } catch (whatsappError) {
-      console.error("Error sending WhatsApp notification:", whatsappError);
+      console.error("Error with WhatsApp notification system:", whatsappError);
       // Continue with the response even if WhatsApp notification fails
     }
 
