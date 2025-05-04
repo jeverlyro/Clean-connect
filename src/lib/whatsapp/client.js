@@ -6,6 +6,19 @@ class WhatsAppClient {
     this.client = null;
     this.isReady = false;
     this.adminPhone = process.env.ADMIN_PHONE_NUMBER || "";
+
+    // Log warning if admin phone number is not set
+    if (!this.adminPhone) {
+      console.warn(
+        "WARNING: ADMIN_PHONE_NUMBER environment variable is not set. WhatsApp notifications to admin will not work."
+      );
+    } else {
+      console.log(
+        `WhatsApp client configured with admin phone: ${this.formatPhoneNumber(
+          this.adminPhone
+        )}`
+      );
+    }
   }
 
   async initialize() {
@@ -13,30 +26,36 @@ class WhatsAppClient {
       return this.client;
     }
 
-    this.client = new Client({
-      puppeteer: {
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      },
-    });
+    try {
+      this.client = new Client({
+        puppeteer: {
+          args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        },
+      });
 
-    this.client.on("qr", (qr) => {
-      console.log("QR RECEIVED, scan with WhatsApp mobile app:");
-      qrcode.generate(qr, { small: true });
-    });
+      this.client.on("qr", (qr) => {
+        console.log("QR RECEIVED, scan with WhatsApp mobile app:");
+        qrcode.generate(qr, { small: true });
+      });
 
-    this.client.on("ready", () => {
-      console.log("WhatsApp client is ready!");
-      this.isReady = true;
-    });
+      this.client.on("ready", () => {
+        console.log("WhatsApp client is ready!");
+        this.isReady = true;
+      });
 
-    this.client.on("disconnected", () => {
-      console.log("WhatsApp client disconnected!");
-      this.isReady = false;
+      this.client.on("disconnected", () => {
+        console.log("WhatsApp client disconnected!");
+        this.isReady = false;
+        this.client = null;
+      });
+
+      await this.client.initialize();
+      return this.client;
+    } catch (error) {
+      console.error("Error initializing WhatsApp client:", error);
       this.client = null;
-    });
-
-    await this.client.initialize();
-    return this.client;
+      throw error;
+    }
   }
 
   async sendMessage(phoneNumber, message) {

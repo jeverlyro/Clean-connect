@@ -55,39 +55,30 @@ export default function ReportPage() {
     }
 
     try {
-      // For demo purposes, we'll simulate the API call with a timeout
-      setTimeout(() => {
-        // Generate AI recommendations based on the report
-        const mockRecommendations = generateMockRecommendations(formData);
-        setRecommendations(mockRecommendations);
-        setSubmitSuccess(true);
-
-        // In a real app, this would be the API call:
-        /*
-        const apiFormData = new FormData();
-        Object.keys(formData).forEach(key => {
-          if (key === 'image' && formData[key]) {
-            apiFormData.append('image', formData[key]);
-          } else if (formData[key]) {
-            apiFormData.append(key, formData[key]);
-          }
-        });
-
-        const response = await fetch('/api/report', {
-          method: 'POST',
-          body: apiFormData,
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          setRecommendations(data.recommendations);
-          setSubmitSuccess(true);
-        } else {
-          throw new Error(data.error || 'Submission failed');
+      // Create a FormData object to send the form data including the image
+      const apiFormData = new FormData();
+      Object.keys(formData).forEach((key) => {
+        if (key === "image" && formData[key]) {
+          apiFormData.append("image", formData[key]);
+        } else if (formData[key]) {
+          apiFormData.append(key, formData[key]);
         }
-        */
-      }, 2000);
+      });
+
+      // Submit the form data to the API
+      const response = await fetch("/api/report", {
+        method: "POST",
+        body: apiFormData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setRecommendations(data.recommendations);
+        setSubmitSuccess(true);
+      } else {
+        throw new Error(data.error || "Submission failed");
+      }
     } catch (error) {
       console.error("Error submitting report:", error);
       setError("Failed to submit your report. Please try again.");
@@ -110,11 +101,9 @@ export default function ReportPage() {
     setError("");
   };
 
-  // Function to generate mock AI recommendations based on the report data
   const generateMockRecommendations = (data) => {
     let recommendations = "";
 
-    // Water source specific recommendations
     if (data.waterSource === "tap") {
       recommendations +=
         "For tap water issues, first check if the problem is present in all faucets or just one. If it's just one, the issue may be with that specific faucet or its pipe connection. ";
@@ -144,7 +133,6 @@ export default function ReportPage() {
         "For recreational activities, monitor local advisories about water quality and algal blooms. Contact your local environmental agency to report significant changes in water quality. ";
     }
 
-    // General recommendations based on the description
     if (
       data.description.toLowerCase().includes("child") ||
       data.description.toLowerCase().includes("baby")
@@ -162,7 +150,6 @@ export default function ReportPage() {
         "If you're experiencing health issues you believe are related to water quality, please consult a healthcare provider immediately. Bring a water sample for potential testing. ";
     }
 
-    // Add contact recommendations
     recommendations += "\n\nNext steps:\n";
     recommendations +=
       "1. Contact your local water utility or health department for professional testing\n";

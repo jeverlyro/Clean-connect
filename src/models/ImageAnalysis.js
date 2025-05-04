@@ -1,12 +1,17 @@
 import mongoose from "mongoose";
 
 const ImageAnalysisSchema = new mongoose.Schema({
-  userId: {
+  analysisId: {
     type: String,
     required: true,
+    unique: true,
   },
-  imageUrl: {
+  userId: {
     type: String,
+    required: false, // Will be required once auth is implemented
+  },
+  imageData: {
+    type: String, // Base64 encoded image data
     required: true,
   },
   results: {
@@ -20,7 +25,7 @@ const ImageAnalysisSchema = new mongoose.Schema({
         name: String,
         level: Number,
         unit: String,
-        threshold: Number,
+        threshold: mongoose.Schema.Types.Mixed, // Can be Number or String (for ranges like "6.5-8.5")
         isSafe: Boolean,
       },
     ],
@@ -29,6 +34,7 @@ const ImageAnalysisSchema = new mongoose.Schema({
       required: true,
     },
     recommendations: [String],
+    timestamp: Date,
   },
   metadata: {
     location: {
@@ -46,6 +52,7 @@ const ImageAnalysisSchema = new mongoose.Schema({
 
 // Index for faster queries
 ImageAnalysisSchema.index({ userId: 1, createdAt: -1 });
+ImageAnalysisSchema.index({ analysisId: 1 }, { unique: true });
 
 export default mongoose.models.ImageAnalysis ||
   mongoose.model("ImageAnalysis", ImageAnalysisSchema);

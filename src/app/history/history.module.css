@@ -92,6 +92,12 @@
   height: 100%;
 }
 
+.tabButtonContent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .activeTab {
   color: var(--primary-600);
 }
@@ -186,6 +192,13 @@
   background: linear-gradient(to right, var(--primary-400), var(--primary-500));
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
+}
+
+.buttonContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .contentContainer {
@@ -408,7 +421,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-normal);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   box-shadow: var(--shadow-sm);

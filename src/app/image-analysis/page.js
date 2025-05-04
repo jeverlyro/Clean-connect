@@ -50,38 +50,26 @@ export default function ImageAnalysisPage() {
     if (!selectedImage) return;
 
     setIsAnalyzing(true);
+    setError("");
 
     try {
       // Create form data to send the image
       const formData = new FormData();
       formData.append("image", selectedImage);
 
-      // In a real application, this would call an actual API endpoint
-      // For demo purposes, we'll simulate the analysis with a timeout
-      setTimeout(() => {
-        // Simulate analysis results based on random data
-        const mockResults = generateMockAnalysisResults();
-        setAnalysisResults(mockResults);
-        setIsAnalyzing(false);
-
-        // In a real app, you would save the analysis results to MongoDB here
-      }, 2000);
-
-      // Real API call would look like this:
-      /*
-      const response = await fetch('/api/analyze-image', {
-        method: 'POST',
+      // Send the image to our API for analysis
+      const response = await fetch("/api/image-analysis", {
+        method: "POST",
         body: formData,
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         setAnalysisResults(data.results);
       } else {
-        throw new Error(data.error || 'Analysis failed');
+        throw new Error(data.error || "Analysis failed");
       }
-      */
     } catch (error) {
       console.error("Image analysis error:", error);
       setError("Failed to analyze the image. Please try again.");
@@ -100,93 +88,46 @@ export default function ImageAnalysisPage() {
     }
   };
 
-  // Helper function to generate mock analysis results
-  const generateMockAnalysisResults = () => {
-    const waterQualityScore = Math.floor(Math.random() * 100);
+  const saveAnalysis = async () => {
+    try {
+      // In a real app with authentication, you would associate this with a user
+      // For now, we just display a success message
+      alert("Analysis saved to your history!");
 
-    const contaminants = [
-      {
-        name: "Chlorine",
-        level: +(Math.random() * 4).toFixed(2),
-        unit: "mg/L",
-        threshold: 4,
-        isSafe: true,
-      },
-      {
-        name: "Lead",
-        level: +(Math.random() * 20).toFixed(2),
-        unit: "ppb",
-        threshold: 15,
-        isSafe: Math.random() > 0.3,
-      },
-      {
-        name: "Turbidity",
-        level: +(Math.random() * 10).toFixed(2),
-        unit: "NTU",
-        threshold: 5,
-        isSafe: Math.random() > 0.4,
-      },
-      {
-        name: "pH",
-        level: +(6 + Math.random() * 3).toFixed(1),
-        unit: "",
-        threshold: "6.5-8.5",
-        isSafe: Math.random() > 0.2,
-      },
-    ];
+      // You could also update the saved flag in the database here
+      // await fetch('/api/image-analysis/save', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ analysisId: analysisResults.analysisId })
+      // });
+    } catch (error) {
+      console.error("Failed to save analysis:", error);
+    }
+  };
 
-    const unsafeContaminants = contaminants.filter((c) => !c.isSafe);
+  // Format analysis text for better readability
+  const formatAnalysisText = (text) => {
+    if (!text) return "";
 
-    let analysis = "";
-    let recommendations = [];
+    // Split by sections (if the AI formatted it with headers)
+    const sections = text.split(
+      /\n(?=Visual|Potential|Recommended|Initial|Analysis)/i
+    );
 
-    if (waterQualityScore >= 80) {
-      analysis =
-        "The water sample appears to be of good quality. Most parameters are within acceptable ranges.";
-      recommendations = [
-        "Continue regular monitoring of water quality",
-        "Maintain current water treatment methods",
-      ];
-    } else if (waterQualityScore >= 50) {
-      analysis =
-        "The water sample shows moderate quality concerns. Some parameters require attention.";
-      recommendations = [
-        "Consider additional filtration for specific contaminants",
-        "Retest water in 1-2 weeks to monitor changes",
-      ];
-
-      if (unsafeContaminants.length > 0) {
-        unsafeContaminants.forEach((c) => {
-          recommendations.push(
-            `Address elevated ${c.name} levels with appropriate treatment`
-          );
-        });
-      }
-    } else {
-      analysis =
-        "The water sample indicates significant quality issues. Multiple parameters exceed recommended levels.";
-      recommendations = [
-        "Consult with water quality specialists immediately",
-        "Consider alternative water sources until issues are resolved",
-        "Install comprehensive water treatment system",
-      ];
-
-      if (unsafeContaminants.length > 0) {
-        unsafeContaminants.forEach((c) => {
-          recommendations.push(
-            `Urgent treatment needed for ${c.name} contamination`
-          );
-        });
-      }
+    if (sections.length > 1) {
+      return (
+        <>
+          {sections.map((section, index) => (
+            <div key={index} className={styles.analysisSection}>
+              {section.trim()}
+            </div>
+          ))}
+        </>
+      );
     }
 
-    return {
-      waterQualityScore,
-      contaminants,
-      analysis,
-      recommendations,
-      timestamp: new Date().toISOString(),
-    };
+    // If no sections detected, return the plain text
+    return text;
   };
 
   return (
@@ -309,7 +250,7 @@ export default function ImageAnalysisPage() {
 
             <div className={styles.analysisText}>
               <h3>Analysis</h3>
-              <p>{analysisResults.analysis}</p>
+              <div>{formatAnalysisText(analysisResults.analysis)}</div>
             </div>
 
             <div className={styles.recommendations}>
@@ -325,10 +266,7 @@ export default function ImageAnalysisPage() {
 
             <button
               className={`${styles.button} ${styles.saveButton}`}
-              onClick={() => {
-                // In a real app, would save to recent analyses
-                alert("Analysis saved to your history!");
-              }}
+              onClick={saveAnalysis}
             >
               <FaSave /> Save Analysis
             </button>

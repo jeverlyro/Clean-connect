@@ -26,135 +26,56 @@ export default function HistoryPage() {
     const loadHistory = async () => {
       setLoading(true);
       try {
-        // In a real app, these would be separate API calls
-        // For demo purposes, we'll create mock data
+        // Fetch chat history from the database
+        const chatResponse = await fetch("/api/chat/history");
+        const chatData = await chatResponse.json();
 
-        // Mock chat history data
-        const mockChatHistory = [
-          {
-            id: "chat_1",
-            date: "2025-05-03T14:30:00Z",
-            messages: [
-              {
-                role: "user",
-                content: "What causes water to smell like chlorine?",
-                timestamp: "2025-05-03T14:30:00Z",
-              },
-              {
-                role: "assistant",
-                content:
-                  "The chlorine smell in water is typically due to chlorine disinfection used by water utilities to kill harmful bacteria. While the smell might be off-putting, it actually indicates that your water has been properly treated. If the smell is very strong, it could be due to higher chlorine levels or a reaction with organic matter. You can reduce the smell by letting water sit in an open container for a few hours or using a carbon filter.",
-                timestamp: "2025-05-03T14:30:15Z",
-              },
-              {
-                role: "user",
-                content: "Is it safe to drink water with chlorine smell?",
-                timestamp: "2025-05-03T14:31:00Z",
-              },
-              {
-                role: "assistant",
-                content:
-                  "Yes, water with a mild chlorine smell is generally safe to drink. The levels of chlorine used in municipal water supplies are regulated and kept within safe limits. The EPA sets the maximum residual disinfectant level for chlorine at 4 milligrams per liter (mg/L). If you're concerned about the taste or smell, you can use a carbon filter pitcher or faucet attachment, which will effectively remove the chlorine.",
-                timestamp: "2025-05-03T14:31:20Z",
-              },
-            ],
-          },
-          {
-            id: "chat_2",
-            date: "2025-05-02T10:15:00Z",
-            messages: [
-              {
-                role: "user",
-                content: "What is water hardness?",
-                timestamp: "2025-05-02T10:15:00Z",
-              },
-              {
-                role: "assistant",
-                content:
-                  "Water hardness refers to the amount of dissolved minerals, specifically calcium and magnesium, in your water. Hard water has high mineral content, while soft water has low mineral content. Hard water isn't harmful to health but can cause scale buildup in pipes and appliances, reduce soap lathering, and leave spots on dishes. Water hardness is typically measured in grains per gallon (gpg) or parts per million (ppm).",
-                timestamp: "2025-05-02T10:15:20Z",
-              },
-            ],
-          },
-        ];
+        if (!chatData.success) {
+          throw new Error(chatData.error || "Failed to fetch chat history");
+        }
 
-        // Mock image analysis history data
-        const mockAnalysisHistory = [
-          {
-            id: "analysis_1",
-            date: "2025-05-04T09:20:00Z",
-            imageUrl: "/sample-water-1.jpg",
-            waterQualityScore: 87,
-            contaminants: [
-              {
-                name: "Chlorine",
-                level: 2.1,
-                unit: "mg/L",
-                threshold: 4,
-                isSafe: true,
-              },
-              {
-                name: "pH",
-                level: 7.2,
-                unit: "",
-                threshold: "6.5-8.5",
-                isSafe: true,
-              },
-              {
-                name: "Turbidity",
-                level: 0.8,
-                unit: "NTU",
-                threshold: 5,
-                isSafe: true,
-              },
-            ],
-            analysis:
-              "The water sample appears to be of good quality. All tested parameters are within acceptable ranges.",
-            recommendations: [
-              "Continue regular monitoring of water quality",
-              "Maintain current water treatment methods",
-            ],
-          },
-          {
-            id: "analysis_2",
-            date: "2025-05-01T16:40:00Z",
-            imageUrl: "/sample-water-2.jpg",
-            waterQualityScore: 64,
-            contaminants: [
-              {
-                name: "Lead",
-                level: 12.6,
-                unit: "ppb",
-                threshold: 15,
-                isSafe: true,
-              },
-              {
-                name: "pH",
-                level: 6.4,
-                unit: "",
-                threshold: "6.5-8.5",
-                isSafe: false,
-              },
-              {
-                name: "Turbidity",
-                level: 6.2,
-                unit: "NTU",
-                threshold: 5,
-                isSafe: false,
-              },
-            ],
-            analysis:
-              "The water sample shows moderate quality concerns. Some parameters require attention.",
-            recommendations: [
-              "Consider additional filtration for turbidity",
-              "Adjust pH with appropriate treatment",
-              "Retest water in 1-2 weeks to monitor changes",
-            ],
-          },
-        ];
+        // Group the chat messages by session
+        const groupedChats = [];
+        if (chatData.messages && chatData.messages.length > 0) {
+          // If we have a single chat session from the API
+          groupedChats.push({
+            id: chatData.sessionId || `chat_${Date.now()}`,
+            date: chatData.messages[0]?.timestamp || new Date().toISOString(),
+            messages: chatData.messages,
+          });
+        }
 
-        setChatHistory(mockChatHistory);
-        setAnalysisHistory(mockAnalysisHistory);
+        // Fetch image analysis history from the database
+        const analysisResponse = await fetch("/api/image-analysis/history");
+        let analysisData = { success: true, analyses: [] };
+
+        try {
+          analysisData = await analysisResponse.json();
+
+          if (!analysisData.success) {
+            throw new Error(
+              analysisData.error || "Failed to fetch analysis history"
+            );
+          }
+        } catch (analysisError) {
+          console.error("Error fetching image analyses:", analysisError);
+          // Continue with empty analyses rather than failing completely
+        }
+
+        // Format the analyses data
+        const formattedAnalyses =
+          analysisData.analyses?.map((analysis) => ({
+            id: analysis.analysisId,
+            date: analysis.results?.timestamp || analysis.createdAt,
+            waterQualityScore: analysis.results?.waterQualityScore || 0,
+            contaminants: analysis.results?.contaminants || [],
+            analysis: analysis.results?.analysis || "No analysis available",
+            recommendations: analysis.results?.recommendations || [],
+            imageUrl: `/api/image-analysis/${analysis.analysisId}/image`, // Endpoint that would serve the image
+          })) || [];
+
+        setChatHistory(groupedChats);
+        setAnalysisHistory(formattedAnalyses);
       } catch (error) {
         console.error("Error loading history:", error);
         setError("Failed to load history data. Please try again later.");
@@ -194,7 +115,9 @@ export default function HistoryPage() {
           }`}
           onClick={() => setActiveTab("chat")}
         >
-          <FaComments /> Chat History
+          <span className={styles.tabButtonContent}>
+            <FaComments /> Chat History
+          </span>
         </button>
         <button
           className={`${styles.tabButton} ${
@@ -202,7 +125,9 @@ export default function HistoryPage() {
           }`}
           onClick={() => setActiveTab("analysis")}
         >
-          <FaVial /> Image Analyses
+          <span className={styles.tabButtonContent}>
+            <FaVial /> Image Analyses
+          </span>
         </button>
       </div>
 
@@ -218,7 +143,9 @@ export default function HistoryPage() {
             className={styles.retryButton}
             onClick={() => window.location.reload()}
           >
-            <FaRedo /> Retry
+            <span className={styles.buttonContent}>
+              <FaRedo /> Retry
+            </span>
           </button>
         </div>
       ) : (
@@ -231,7 +158,9 @@ export default function HistoryPage() {
                 <div className={styles.emptyState}>
                   <p>You don&apos;t have any chat history yet.</p>
                   <a href="/chatbot" className={styles.startButton}>
-                    <FaCommentDots /> Start a New Chat
+                    <span className={styles.buttonContent}>
+                      <FaCommentDots /> Start a New Chat
+                    </span>
                   </a>
                 </div>
               ) : (
@@ -275,11 +204,12 @@ export default function HistoryPage() {
                           className={styles.viewButton}
                           onClick={() => {
                             // In a real app, this would navigate to a detailed view
-                            // or expand the conversation in place
-                            alert("View full conversation");
+                            window.location.href = `/chatbot?session=${chat.id}`;
                           }}
                         >
-                          <FaFileAlt /> View Full Conversation
+                          <span className={styles.buttonContent}>
+                            <FaFileAlt /> View Full Conversation
+                          </span>
                         </button>
                       </div>
                     </div>
@@ -297,7 +227,9 @@ export default function HistoryPage() {
                 <div className={styles.emptyState}>
                   <p>You don&apos;t have any image analysis history yet.</p>
                   <a href="/image-analysis" className={styles.startButton}>
-                    <FaVial /> Analyze a Water Sample
+                    <span className={styles.buttonContent}>
+                      <FaVial /> Analyze a Water Sample
+                    </span>
                   </a>
                 </div>
               ) : (
@@ -332,7 +264,7 @@ export default function HistoryPage() {
 
                       <div className={styles.analysisSummary}>
                         <h3>Analysis Summary</h3>
-                        <p>{analysis.analysis}</p>
+                        <p>{analysis.analysis.substring(0, 150)}...</p>
                       </div>
 
                       <div className={styles.contaminantsPreview}>
@@ -366,11 +298,12 @@ export default function HistoryPage() {
                         <button
                           className={styles.viewButton}
                           onClick={() => {
-                            // In a real app, this would navigate to a detailed view
-                            alert("View full analysis report");
+                            window.location.href = `/report?id=${analysis.id}`;
                           }}
                         >
-                          <FaFileAlt /> View Full Report
+                          <span className={styles.buttonContent}>
+                            <FaFileAlt /> View Full Report
+                          </span>
                         </button>
                       </div>
                     </div>
@@ -385,11 +318,15 @@ export default function HistoryPage() {
       <div className={styles.actionsContainer}>
         {activeTab === "chat" ? (
           <a href="/chatbot" className={styles.primaryButton}>
-            <FaPlus /> Start New Chat
+            <span className={styles.buttonContent}>
+              <FaPlus /> Start New Chat
+            </span>
           </a>
         ) : (
           <a href="/image-analysis" className={styles.primaryButton}>
-            <FaPlus /> New Image Analysis
+            <span className={styles.buttonContent}>
+              <FaPlus /> New Image Analysis
+            </span>
           </a>
         )}
       </div>
