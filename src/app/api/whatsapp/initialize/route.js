@@ -3,12 +3,22 @@ import { getWhatsAppClient } from "@/lib/whatsapp/client";
 
 export async function POST() {
   try {
+    // Set a timeout for the initialization process
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(
+        () =>
+          reject(
+            new Error("WhatsApp initialization timed out after 60 seconds")
+          ),
+        60000
+      );
+    });
+
+    // Get the WhatsApp client instance
     const whatsappClient = getWhatsAppClient();
 
-    // Start the initialization process for admin notifications
-    // This will trigger the QR code generation that needs to be scanned once
-    // to enable the notification service
-    await whatsappClient.initialize();
+    // Race the initialization with a timeout
+    await Promise.race([whatsappClient.initialize(), timeoutPromise]);
 
     return NextResponse.json({
       success: true,

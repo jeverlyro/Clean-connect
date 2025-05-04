@@ -4,12 +4,19 @@ import fs from "fs";
 import path from "path";
 import { LocalAuth } from "whatsapp-web.js";
 
-// Fix for fluent-ffmpeg issues
-import ffmpeg from "fluent-ffmpeg";
-import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
+// Move ffmpeg imports into a function to avoid loading on every import
+let ffmpeg;
+function loadFfmpeg() {
+  if (!ffmpeg) {
+    // Fix for fluent-ffmpeg issues
+    ffmpeg = require("fluent-ffmpeg");
+    const { path: ffmpegPath } = require("@ffmpeg-installer/ffmpeg");
 
-// Set ffmpeg path
-ffmpeg.setFfmpegPath(ffmpegPath);
+    // Set ffmpeg path
+    ffmpeg.setFfmpegPath(ffmpegPath);
+  }
+  return ffmpeg;
+}
 
 class WhatsAppClient {
   constructor() {
@@ -18,6 +25,7 @@ class WhatsAppClient {
     this.adminPhone = process.env.ADMIN_PHONE_NUMBER || "";
     this.qrCodePath = path.join(process.cwd(), "public", "whatsapp-qr.png");
     this.lastQrGenerated = null;
+    this.isInitializing = false;
 
     // Log warning if admin phone number is not set
     if (!this.adminPhone) {
@@ -38,7 +46,25 @@ class WhatsAppClient {
       return this.client;
     }
 
+    if (this.isInitializing) {
+      // If already initializing, wait until it completes
+      await new Promise((resolve) => {
+        const checkInterval = setInterval(() => {
+          if (!this.isInitializing) {
+            clearInterval(checkInterval);
+            resolve();
+          }
+        }, 500);
+      });
+      return this.client;
+    }
+
+    this.isInitializing = true;
+
     try {
+      // Load ffmpeg only when needed
+      loadFfmpeg();
+
       // Create a data directory for WhatsApp session persistence
       const sessionDir = path.join(process.cwd(), ".wwebjs_auth");
       if (!fs.existsSync(sessionDir)) {
@@ -108,6 +134,8 @@ class WhatsAppClient {
       console.error("Error initializing WhatsApp client:", error);
       this.client = null;
       throw error;
+    } finally {
+      this.isInitializing = false;
     }
   }
 

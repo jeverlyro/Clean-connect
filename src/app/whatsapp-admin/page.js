@@ -11,6 +11,30 @@ export default function WhatsAppAdminPage() {
   const [error, setError] = useState(null);
   const [qrAvailable, setQrAvailable] = useState(false);
   const [qrTimestamp, setQrTimestamp] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Only check QR code availability on initial load, not full WhatsApp client status
+  const checkQrCode = async () => {
+    try {
+      // Add a cache-busting parameter to prevent browser caching
+      const cacheBuster = new Date().getTime();
+      const response = await fetch(`/whatsapp-qr.png?t=${cacheBuster}`, {
+        method: "HEAD",
+      });
+
+      if (response.ok) {
+        setQrAvailable(true);
+        setQrTimestamp(new Date().getTime());
+      } else {
+        setQrAvailable(false);
+      }
+    } catch (err) {
+      console.error("Error checking QR code:", err);
+      setQrAvailable(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const initializeWhatsApp = async () => {
     setStatus("initializing");
@@ -25,7 +49,8 @@ export default function WhatsAppAdminPage() {
 
       if (data.success) {
         setStatus("initialized");
-        checkQrCode();
+        // Start checking for QR code after initialization request
+        startQrCodeChecking();
       } else {
         setStatus("error");
         setError(data.error || "Failed to initialize WhatsApp client");
@@ -60,35 +85,23 @@ export default function WhatsAppAdminPage() {
     }
   };
 
-  const checkQrCode = async () => {
-    try {
-      // Add a cache-busting parameter to prevent browser caching
-      const cacheBuster = new Date().getTime();
-      const response = await fetch(`/whatsapp-qr.png?t=${cacheBuster}`, {
-        method: "HEAD",
-      });
-
-      if (response.ok) {
-        setQrAvailable(true);
-        setQrTimestamp(new Date().getTime());
-      } else {
-        setQrAvailable(false);
-      }
-    } catch (err) {
-      console.error("Error checking QR code:", err);
-      setQrAvailable(false);
-    }
-  };
-
-  useEffect(() => {
-    // Check QR code status on component mount
+  const startQrCodeChecking = () => {
+    // Check immediately
     checkQrCode();
 
     // Set up interval to check QR code availability every 5 seconds
     const interval = setInterval(checkQrCode, 5000);
 
-    // Clean up interval on component unmount
+    // Store the interval ID so we can clear it later
     return () => clearInterval(interval);
+  };
+
+  // Do only a lightweight check on component mount
+  useEffect(() => {
+    // Only do a lightweight check for the QR image
+    checkQrCode();
+
+    // No automatic interval - we'll only start checking after initialization
   }, []);
 
   return (
