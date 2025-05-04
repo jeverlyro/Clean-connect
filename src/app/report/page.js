@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import styles from "./report.module.css";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa";
 
 export default function ReportPage() {
   const [formData, setFormData] = useState({
@@ -170,6 +172,10 @@ export default function ReportPage() {
 
   return (
     <div className={styles.container}>
+      <Link href="/" className={styles.backButton}>
+        <FaArrowLeft /> Back
+      </Link>
+
       <div className={styles.header}>
         <h1>Water Quality Report Form</h1>
         <p>Submit details about water quality issues you&apos;ve encountered</p>

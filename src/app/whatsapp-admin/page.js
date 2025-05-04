@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import styles from "./whatsapp-admin.module.css";
 import Image from "next/image";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa";
 
 export default function WhatsAppAdminPage() {
   const [status, setStatus] = useState("idle");
@@ -91,6 +93,10 @@ export default function WhatsAppAdminPage() {
 
   return (
     <div className={styles.container}>
+      <Link href="/" className={styles.backButton}>
+        <FaArrowLeft /> Back
+      </Link>
+
       <h1>Admin Notification Setup</h1>
 
       <div className={styles.card}>
