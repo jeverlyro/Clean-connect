@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "./history.module.css";
+import Link from "next/link";
 // Import FontAwesome icons
 import {
   FaComments,
@@ -12,6 +13,7 @@ import {
   FaCommentDots,
   FaFileAlt,
   FaPlus,
+  FaArrowLeft,
 } from "react-icons/fa";
 
 export default function HistoryPage() {
@@ -103,6 +105,10 @@ export default function HistoryPage() {
 
   return (
     <div className={styles.container}>
+      <Link href="/" className={styles.backButton}>
+        <FaArrowLeft /> Back
+      </Link>
+
       <div className={styles.header}>
         <h1>Your History</h1>
         <p>View your past chat conversations and water quality analyses</p>
@@ -157,11 +163,11 @@ export default function HistoryPage() {
               {chatHistory.length === 0 ? (
                 <div className={styles.emptyState}>
                   <p>You don&apos;t have any chat history yet.</p>
-                  <a href="/chatbot" className={styles.startButton}>
+                  <Link href="/chatbot" className={styles.startButton}>
                     <span className={styles.buttonContent}>
                       <FaCommentDots /> Start a New Chat
                     </span>
-                  </a>
+                  </Link>
                 </div>
               ) : (
                 <div className={styles.historyList}>
@@ -226,11 +232,11 @@ export default function HistoryPage() {
               {analysisHistory.length === 0 ? (
                 <div className={styles.emptyState}>
                   <p>You don&apos;t have any image analysis history yet.</p>
-                  <a href="/image-analysis" className={styles.startButton}>
+                  <Link href="/image-analysis" className={styles.startButton}>
                     <span className={styles.buttonContent}>
                       <FaVial /> Analyze a Water Sample
                     </span>
-                  </a>
+                  </Link>
                 </div>
               ) : (
                 <div className={styles.analysisGrid}>
@@ -243,21 +249,51 @@ export default function HistoryPage() {
                         <div
                           className={styles.scoreCircle}
                           style={{
-                            background: `conic-gradient(
-                            ${
-                              analysis.waterQualityScore >= 80
-                                ? "#4CAF50"
-                                : analysis.waterQualityScore >= 50
-                                ? "#FFC107"
-                                : "#F44336"
-                            } 
-                            ${analysis.waterQualityScore * 3.6}deg, 
-                            #f0f0f0 0deg
-                          )`,
+                            position: `relative`,
                           }}
                         >
-                          <div className={styles.scoreValue}>
-                            {analysis.waterQualityScore}
+                          <svg
+                            className={styles.scoreProgressRing}
+                            width="70"
+                            height="70"
+                            viewBox="0 0 120 120"
+                          >
+                            {/* Background circle */}
+                            <circle
+                              cx="60"
+                              cy="60"
+                              r="54"
+                              fill="none"
+                              stroke="#e2e8f0"
+                              strokeWidth="10"
+                            />
+                            {/* Progress arc */}
+                            <circle
+                              cx="60"
+                              cy="60"
+                              r="54"
+                              fill="none"
+                              stroke={
+                                analysis.waterQualityScore >= 80
+                                  ? "#3B82F6" // Blue for high scores
+                                  : analysis.waterQualityScore >= 50
+                                  ? "#4ADE80" // Green for medium scores
+                                  : "#F59E0B" // Yellow/Orange for low scores
+                              }
+                              strokeWidth="10"
+                              strokeDasharray={`${
+                                analysis.waterQualityScore * 3.39
+                              } 1000`}
+                              strokeDashoffset="0"
+                              strokeLinecap="round"
+                              transform="rotate(-90, 60, 60)"
+                            />
+                          </svg>
+                          <div className={styles.scoreValueContainer}>
+                            <div className={styles.scoreValue}>
+                              {analysis.waterQualityScore}
+                              <span className={styles.scorePercent}>%</span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -317,17 +353,17 @@ export default function HistoryPage() {
 
       <div className={styles.actionsContainer}>
         {activeTab === "chat" ? (
-          <a href="/chatbot" className={styles.primaryButton}>
+          <Link href="/chatbot" className={styles.primaryButton}>
             <span className={styles.buttonContent}>
               <FaPlus /> Start New Chat
             </span>
-          </a>
+          </Link>
         ) : (
-          <a href="/image-analysis" className={styles.primaryButton}>
+          <Link href="/image-analysis" className={styles.primaryButton}>
             <span className={styles.buttonContent}>
               <FaPlus /> New Image Analysis
             </span>
-          </a>
+          </Link>
         )}
       </div>
     </div>

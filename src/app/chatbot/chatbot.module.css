@@ -185,6 +185,7 @@
   line-height: 1.6;
   word-break: break-word;
   font-size: 1.0625rem;
+  text-align: justify;
 }
 
 .messageContent a {
@@ -377,6 +378,45 @@
     transform: translateY(-6px);
     opacity: 1;
   }
+}
+
+.bulletPoint {
+  position: relative;
+  padding-left: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.bulletPoint::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--primary-500);
+}
+
+.backButton {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius-md);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+}
+
+.backButton:hover {
+  background-color: var(--bg-primary);
+  color: var(--primary-600);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 @media (max-width: 768px) {

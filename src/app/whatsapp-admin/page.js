@@ -34,6 +34,30 @@ export default function WhatsAppAdminPage() {
     }
   };
 
+  const resetInitialization = async () => {
+    setStatus("resetting");
+    setError(null);
+
+    try {
+      const response = await fetch("/api/whatsapp/initialize", {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStatus("idle");
+        setQrAvailable(false);
+      } else {
+        setStatus("error");
+        setError(data.error || "Failed to reset WhatsApp client");
+      }
+    } catch (err) {
+      setStatus("error");
+      setError(err.message || "An error occurred while resetting WhatsApp");
+    }
+  };
+
   const checkQrCode = async () => {
     try {
       // Add a cache-busting parameter to prevent browser caching
@@ -67,10 +91,16 @@ export default function WhatsAppAdminPage() {
 
   return (
     <div className={styles.container}>
-      <h1>WhatsApp Integration Admin</h1>
+      <h1>Admin Notification Setup</h1>
 
       <div className={styles.card}>
-        <h2>WhatsApp Client Status</h2>
+        <h2>WhatsApp Notification System</h2>
+        <p>
+          This page allows you to set up WhatsApp notifications for admin
+          alerts. When important events occur (like new water quality reports),
+          notifications will be sent to the admin phone number configured in
+          your environment variables.
+        </p>
         <p>
           Current status: <span className={styles[status]}>{status}</span>
         </p>
@@ -81,15 +111,29 @@ export default function WhatsAppAdminPage() {
           </div>
         )}
 
-        <button
-          onClick={initializeWhatsApp}
-          disabled={status === "initializing"}
-          className={styles.button}
-        >
-          {status === "initializing"
-            ? "Initializing..."
-            : "Initialize WhatsApp Client"}
-        </button>
+        <div className={styles.buttonGroup}>
+          <button
+            onClick={initializeWhatsApp}
+            disabled={status === "initializing" || status === "resetting"}
+            className={styles.button}
+          >
+            {status === "initializing"
+              ? "Initializing..."
+              : "Connect WhatsApp Notification Service"}
+          </button>
+
+          <button
+            onClick={resetInitialization}
+            disabled={
+              status === "initializing" ||
+              status === "resetting" ||
+              status === "idle"
+            }
+            className={`${styles.button} ${styles.resetButton}`}
+          >
+            {status === "resetting" ? "Resetting..." : "Reset Connection"}
+          </button>
+        </div>
 
         <div className={styles.qrSection}>
           <h3>QR Code for Authentication</h3>
@@ -97,7 +141,8 @@ export default function WhatsAppAdminPage() {
           {qrAvailable ? (
             <div className={styles.qrContainer}>
               <p>
-                Scan this QR code with WhatsApp on your phone to authenticate:
+                Scan this QR code with WhatsApp on your admin phone to connect
+                the notification service:
               </p>
               <Image
                 src={`/whatsapp-qr.png?t=${qrTimestamp}`}
@@ -107,36 +152,49 @@ export default function WhatsAppAdminPage() {
                 className={styles.qrCode}
               />
               <p className={styles.note}>
-                Once authenticated, this QR code will disappear.
+                Once authenticated, this QR code will disappear and the admin
+                notifications will be active.
               </p>
             </div>
           ) : (
-            <p>
-              No QR code available. This means either:
-              <ul>
-                <li>The WhatsApp client is already authenticated</li>
-                <li>The WhatsApp client has not been initialized yet</li>
+            <div className={styles.noQrContainer}>
+              <p>No QR code available. This means either:</p>
+              <ul className={styles.reasonsList}>
+                <li>The WhatsApp notification service is already connected</li>
+                <li>The service has not been initialized yet</li>
                 <li>There was an error generating the QR code</li>
               </ul>
-            </p>
+            </div>
           )}
         </div>
       </div>
 
       <div className={styles.card}>
-        <h2>Instructions</h2>
-        <ol>
-          <li>Click the "Initialize WhatsApp Client" button above</li>
+        <h2>Admin Notification Setup Instructions</h2>
+        <ol className={styles.instructionsList}>
+          <li>
+            Make sure your ADMIN_PHONE_NUMBER is correctly set in your
+            environment variables
+          </li>
+          <li>
+            Click the &quot;Connect WhatsApp Notification Service&quot; button
+            above
+          </li>
           <li>Wait for the QR code to appear (may take a few seconds)</li>
-          <li>Open WhatsApp on your phone</li>
-          <li>Tap Menu or Settings and select WhatsApp Web</li>
+          <li>Open WhatsApp on your admin phone</li>
+          <li>Tap Menu or Settings and select WhatsApp Web/Linked Devices</li>
           <li>Point your phone to this screen to scan the QR code</li>
-          <li>The QR code will disappear once authentication is successful</li>
+          <li>The QR code will disappear once successfully connected</li>
         </ol>
         <p className={styles.note}>
-          Note: Once authenticated, the WhatsApp session will be saved and you
-          won't need to scan the QR code again unless you log out from WhatsApp
-          Web or the session expires.
+          Note: Once connected, the WhatsApp notification service will
+          automatically send alerts to the admin phone number when new reports
+          are submitted or other important events occur.
+        </p>
+        <p className={styles.note}>
+          Your admin phone number is configured in your environment variables.
+          If you need to change it, update the ADMIN_PHONE_NUMBER environment
+          variable.
         </p>
       </div>
     </div>

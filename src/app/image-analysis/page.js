@@ -3,8 +3,15 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import styles from "./image-analysis.module.css";
+import Link from "next/link";
 // Import FontAwesome icons
-import { FaUpload, FaSync, FaMicroscope, FaSave } from "react-icons/fa";
+import {
+  FaUpload,
+  FaSync,
+  FaMicroscope,
+  FaSave,
+  FaArrowLeft,
+} from "react-icons/fa";
 
 export default function ImageAnalysisPage() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -105,33 +112,34 @@ export default function ImageAnalysisPage() {
     }
   };
 
-  // Format analysis text for better readability
+  // Format analysis text for better readability and shorter responses
   const formatAnalysisText = (text) => {
     if (!text) return "";
 
-    // Split by sections (if the AI formatted it with headers)
-    const sections = text.split(
-      /\n(?=Visual|Potential|Recommended|Initial|Analysis)/i
-    );
+    // Remove any markdown formatting symbols
+    let formattedText = text
+      .replace(/\*\*(.*?)\*\*/g, "$1") // Remove bold markers
+      .replace(/__(.*?)__/g, "$1") // Remove underscore emphasis
+      .replace(/\*([^*]+)\*/g, "$1") // Remove single asterisk emphasis
+      .replace(/^>+\s?/gm, "") // Remove quote marks
+      .replace(/#+\s/gm, "") // Remove heading markers
+      .replace(/\n+/g, " ") // Replace multiple newlines with space
+      .replace(/\s{2,}/g, " "); // Replace multiple spaces with single space
 
-    if (sections.length > 1) {
-      return (
-        <>
-          {sections.map((section, index) => (
-            <div key={index} className={styles.analysisSection}>
-              {section.trim()}
-            </div>
-          ))}
-        </>
-      );
+    // Shorten to reasonable length (150-200 words)
+    if (formattedText.length > 300) {
+      formattedText = formattedText.substring(0, 300) + "...";
     }
 
-    // If no sections detected, return the plain text
-    return text;
+    return formattedText;
   };
 
   return (
     <div className={styles.container}>
+      <Link href="/" className={styles.backButton}>
+        <FaArrowLeft /> Back
+      </Link>
+
       <div className={styles.header}>
         <h1>Water Quality Image Analysis</h1>
         <p>Upload an image of your water sample for quality analysis</p>
@@ -203,22 +211,51 @@ export default function ImageAnalysisPage() {
               <div
                 className={styles.scoreCircle}
                 style={{
-                  background: `conic-gradient(
-                  ${
-                    analysisResults.waterQualityScore >= 80
-                      ? "#4CAF50"
-                      : analysisResults.waterQualityScore >= 50
-                      ? "#FFC107"
-                      : "#F44336"
-                  } 
-                  ${analysisResults.waterQualityScore * 3.6}deg, 
-                  #f0f0f0 0deg
-                )`,
+                  position: `relative`,
                 }}
               >
-                <div className={styles.scoreValue}>
-                  <span>{analysisResults.waterQualityScore}</span>
-                  <small>/100</small>
+                <svg
+                  className={styles.scoreProgressRing}
+                  width="150"
+                  height="150"
+                  viewBox="0 0 120 120"
+                >
+                  {/* Background circle */}
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="54"
+                    fill="none"
+                    stroke="#e2e8f0"
+                    strokeWidth="10"
+                  />
+                  {/* Progress arc */}
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="54"
+                    fill="none"
+                    stroke={
+                      analysisResults.waterQualityScore >= 80
+                        ? "#3B82F6" // Blue for high scores
+                        : analysisResults.waterQualityScore >= 50
+                        ? "#4ADE80" // Green for medium scores
+                        : "#F59E0B" // Yellow/Orange for low scores
+                    }
+                    strokeWidth="10"
+                    strokeDasharray={`${
+                      analysisResults.waterQualityScore * 3.39
+                    } 1000`}
+                    strokeDashoffset="0"
+                    strokeLinecap="round"
+                    transform="rotate(-90, 60, 60)"
+                  />
+                </svg>
+                <div className={styles.scoreValueContainer}>
+                  <div className={styles.scoreValue}>
+                    {analysisResults.waterQualityScore}
+                    <span className={styles.scorePercent}>%</span>
+                  </div>
                 </div>
               </div>
               <p className={styles.scoreLabel}>Water Quality Score</p>

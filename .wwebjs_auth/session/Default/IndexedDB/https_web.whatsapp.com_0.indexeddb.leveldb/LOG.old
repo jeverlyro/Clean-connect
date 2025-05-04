@@ -1,0 +1,11 @@
+2025/05/04-14:25:37.399 1e50 Reusing MANIFEST C:\Users\ikade\OneDrive\Documents\clean-connect\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/05/04-14:25:37.408 1e50 Recovering log #42
+2025/05/04-14:25:37.428 1e50 Reusing old log C:\Users\ikade\OneDrive\Documents\clean-connect\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000042.log 
+2025/05/04-14:25:42.488 4310 Level-0 table #47: started
+2025/05/04-14:25:42.494 4310 Level-0 table #47: 107050 bytes OK
+2025/05/04-14:25:42.495 4310 Delete type=0 #42
+2025/05/04-14:25:42.495 4310 Manual compaction at level-0 from '\x00\x1b\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x1c\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/05/04-14:25:44.696 4310 Compacting 1@1 + 1@2 files
+2025/05/04-14:25:44.753 4310 Generated table #48@1: 21603 keys, 911898 bytes
+2025/05/04-14:25:44.753 4310 Compacted 1@1 + 1@2 files => 911898 bytes
+2025/05/04-14:25:44.754 4310 compacted to: files[ 0 0 1 0 0 0 0 ]

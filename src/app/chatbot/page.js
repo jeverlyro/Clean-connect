@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./chatbot.module.css";
 // Import FontAwesome icons
-import { FaPaperPlane, FaTrash, FaHistory } from "react-icons/fa";
+import { FaPaperPlane, FaTrash, FaHistory, FaArrowLeft } from "react-icons/fa";
+import Link from "next/link";
 
 export default function ChatbotPage() {
   const [messages, setMessages] = useState([
@@ -133,8 +134,30 @@ export default function ChatbotPage() {
     }
   };
 
+  // Format message content to handle formatting while removing special symbols
+  const formatMessageContent = (content) => {
+    if (!content) return "";
+
+    // Process bold text (** or __ syntax), but remove the symbols
+    let formattedContent = content
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Bold with **
+      .replace(/__(.*?)__/g, "<strong>$1</strong>"); // Bold with __
+
+    // Process bullet points, removing symbol but preserving structure
+    formattedContent = formattedContent.replace(
+      /^\s*[-*•]\s+(.+)$/gm,
+      '<div class="bulletPoint">$1</div>'
+    );
+
+    return <div dangerouslySetInnerHTML={{ __html: formattedContent }} />;
+  };
+
   return (
     <div className={styles.container}>
+      <Link href="/" className={styles.backButton}>
+        <FaArrowLeft /> Back
+      </Link>
+
       <div className={styles.header}>
         <h1>Water Quality Chatbot</h1>
         <p>Ask me anything about water quality issues and solutions</p>
@@ -149,7 +172,11 @@ export default function ChatbotPage() {
                 message.role === "user" ? styles.userMessage : styles.botMessage
               }`}
             >
-              <div className={styles.messageContent}>{message.content}</div>
+              <div className={styles.messageContent}>
+                {message.role === "assistant"
+                  ? formatMessageContent(message.content)
+                  : message.content}
+              </div>
             </div>
           ))}
           {isLoading && (
@@ -191,11 +218,11 @@ export default function ChatbotPage() {
             <FaTrash /> Clear Chat
           </span>
         </button>
-        <a href="/history" className={styles.historyLink}>
+        <Link href="/history" className={styles.historyLink}>
           <span className="button-content">
             <FaHistory /> View Chat History
           </span>
-        </a>
+        </Link>
       </div>
     </div>
   );

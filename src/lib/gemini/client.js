@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Model constants
 export const GEMINI_CHAT_MODEL = "gemini-1.5-flash"; // Using Gemini 2.5 Flash for chat
-export const GEMINI_VISION_MODEL = "gemini-pro-vision"; // Using Vision model for image analysis
+export const GEMINI_VISION_MODEL = "gemini-1.5-pro"; // Updated to Gemini 2.5 Pro for image analysis
 
 /**
  * Get a Gemini model instance

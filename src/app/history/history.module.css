@@ -496,31 +496,34 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  background: conic-gradient(
-    var(--primary-500) var(--score-percentage, 0%),
-    transparent var(--score-percentage, 0%)
-  );
-  transform: rotate(-90deg);
-  box-shadow: var(--shadow-sm);
 }
 
-.scoreCircle::before {
-  content: "";
+.scoreProgressRing {
   position: absolute;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background-color: var(--card-bg);
-  transform: rotate(90deg);
+  top: 0;
+  left: 0;
+}
+
+.scoreValueContainer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .scoreValue {
-  position: relative;
-  z-index: 1;
   font-size: 1.375rem;
   font-weight: 700;
-  transform: rotate(90deg);
   color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+}
+
+.scorePercent {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-left: 1px;
 }
 
 .analysisSummary {
@@ -640,6 +643,32 @@
 
 .primaryButton:active {
   transform: translateY(0);
+}
+
+.backButton {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius-md);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+}
+
+.backButton:hover {
+  background-color: var(--bg-primary);
+  color: var(--primary-600);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 @media (max-width: 768px) {

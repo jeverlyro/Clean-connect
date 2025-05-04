@@ -337,34 +337,35 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  background: conic-gradient(
-    var(--primary-500) var(--score-percentage, 0%),
-    transparent var(--score-percentage, 0%)
-  );
-  transform: rotate(-90deg);
   margin-bottom: 1rem;
 }
 
-.scoreCircle::before {
-  content: "";
+.scoreProgressRing {
   position: absolute;
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  background-color: var(--card-bg);
-  transform: rotate(90deg);
+  top: 0;
+  left: 0;
 }
 
-.scoreValue {
+.scoreValueContainer {
   position: relative;
   z-index: 1;
-  font-size: 2.5rem;
-  font-weight: 700;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.scoreValue {
+  font-size: 2.5rem;
+  font-weight: 700;
   color: var(--text-primary);
-  transform: rotate(90deg);
+  display: flex;
+  align-items: baseline;
+}
+
+.scorePercent {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-left: 2px;
 }
 
 .scoreValue small {
@@ -501,9 +502,12 @@
   border-radius: 2px;
 }
 
-.analysisText p {
+.analysisText p,
+.recommendations li,
+.analysisSection {
   line-height: 1.7;
   color: var(--text-secondary);
+  text-align: justify;
 }
 
 .recommendations ul {
@@ -551,8 +555,34 @@
   transform: translateY(0);
 }
 
-@media (max-width: 768px) {
-  .container {
+.backButton {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background-color: rgba(29, 78, 216, 0.9);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.backButton:hover {
+  background-color: rgba(37, 99, 235, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.backButton:active {
     padding: 1.5rem;
   }
 

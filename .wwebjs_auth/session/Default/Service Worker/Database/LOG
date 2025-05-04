@@ -1,2 +1,3 @@
-2025/05/04-13:02:18.421 4218 Creating DB C:\Users\ikade\OneDrive\Documents\clean-connect\.wwebjs_auth\session\Default\Service Worker\Database since it was missing.
-2025/05/04-13:02:18.427 4218 Reusing MANIFEST C:\Users\ikade\OneDrive\Documents\clean-connect\.wwebjs_auth\session\Default\Service Worker\Database/MANIFEST-000001
+2025/05/04-15:02:54.439 4104 Reusing MANIFEST C:\Users\ikade\OneDrive\Documents\clean-connect\.wwebjs_auth\session\Default\Service Worker\Database/MANIFEST-000001
+2025/05/04-15:02:54.439 4104 Recovering log #3
+2025/05/04-15:02:54.439 4104 Reusing old log C:\Users\ikade\OneDrive\Documents\clean-connect\.wwebjs_auth\session\Default\Service Worker\Database/000003.log 

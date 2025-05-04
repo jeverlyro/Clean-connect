@@ -172,7 +172,7 @@ To view full details, log in to the CleanConnect admin dashboard.
 
     // Ensure the number has the correct format (e.g., remove leading zeros, add country code if missing)
     if (!cleaned.startsWith("1") && !cleaned.startsWith("+")) {
-      cleaned = "1" + cleaned; // Add US/Canada country code as default
+      cleaned = "62" + cleaned;
     }
 
     return cleaned;
